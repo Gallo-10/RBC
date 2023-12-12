@@ -2,15 +2,14 @@ import psycopg2
 import os
 import sys
 from dotenv import load_dotenv
-import json
 import PySimpleGUI as sg
-from paginas.pag_3 import pag_3
-# importa a funcao de calculo do arquivo conexao.py
+from pages.pag_3 import pag_3
+
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
-from calculo import similaridade_global
+from calculo_sim import similaridade_global
 
 load_dotenv()
 
@@ -21,7 +20,7 @@ def pag_2(cnf):
     toprow = ['ID', 'Objetivo', 'Simlaridade']
     rows = []
     
-    # Cria um cursor para executar comandos SQL
+    # Cria um cursor para executar SQL
     cur = conexao.cursor()
 
     # Cria um vetor dinamico para armazenar os valores de similaridade global
@@ -30,17 +29,13 @@ def pag_2(cnf):
     # Calcula a similaridade global
     similaridade_global_dic = similaridade_global(conexao, cur, 'novo_caso.json')
 
-    
-    # Mutiplica a similaridade global por 100 para facilitar a visualização
-
-
 
     opcoes_objetivo = []
 
     # Se a similaridade global for maior que a cnf minima, o caso é recomendado
     for i in range(1, len(similaridade_global_dic)+1):
-        if similaridade_global_dic[i] >= cnf:
-            cur.execute(f"SELECT desc_doenca FROM public.casos_casospt WHERE caso = {i}")
+        if (similaridade_global_dic[i] * 100) >= cnf:
+            cur.execute(f"SELECT desc_doenca FROM public.casos_casospt WHERE caso = '{i}'")
             objetivo = cur.fetchall()
             rows.append([i, objetivo[0][0], similaridade_global_dic[i]])
             if objetivo[0][0] not in opcoes_objetivo:
@@ -50,12 +45,7 @@ def pag_2(cnf):
     rows = sorted(rows, key=lambda x: x[2], reverse=True)
     
 
-    
 
-    
-    
-
-    
     # Cria a tabela
     tabela = sg.Table(values=rows, headings=toprow,
     auto_size_columns=True,
@@ -65,16 +55,15 @@ def pag_2(cnf):
     enable_events=True,
     expand_x=True,
     expand_y=True,
-    enable_click_events=True)
+    enable_click_events=True,
+    size = (20,20))
 
-    botoes = [
-        [sg.Button('Continuar')],
-        [sg.Button('Voltar')],
-        [sg.Button('Sair')],
+    layout = [
+        [tabela],
+        [sg.Button('Continuar'), sg.Button('Voltar'), sg.Button('Sair')]
     ]
-    layout = [[tabela],
-              [sg.Column(botoes, element_justification='right', expand_x=True)]]
-    window = sg.Window('Tabela', layout, grab_anywhere=False)
+
+    window = sg.Window('Tabela de similaridade', layout, grab_anywhere=False)
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED:

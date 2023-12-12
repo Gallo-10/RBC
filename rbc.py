@@ -3,9 +3,9 @@
 # para mac/linux
 # pip3 install PySimpleGUI
 import PySimpleGUI as sg
-from paginas import pag_1
+from pages import pag_1
 
-sg.theme('Reddit')
+sg.theme('GreenMono')
 
 def pag_inicial():
     buttons = [
@@ -14,12 +14,14 @@ def pag_inicial():
     ]
 
     layout = [
-        [sg.Text('Bem vindo ao sistema de recomendação de produtos para o controle de doenças em plantações!', font=('Arial Bold',13), justification='center')],
+        [sg.Text('Bem vindo!', font=('Arial Bold',13), justification='center')],
+        [sg.Text('Este é um sistema de RBC para doenças em plantações!', font=('Arial Bold', 13), justification='center')],
         [sg.Text('')],
         [sg.Column(buttons, element_justification='right', expand_x=True)]
     ]
 
-    window = sg.Window('Sistema de Recomendação', layout)
+    window = sg.Window('Sistema RBC', layout)
+
 
     while True:
         event, values = window.read()

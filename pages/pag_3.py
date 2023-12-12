@@ -6,7 +6,7 @@ def pag_3(cur, id, objetivo, path):
     with open(path, 'r') as f:
         novo_caso = json.load(f)
 
-    cur.execute(f"SELECT * FROM public.casos_casospt WHERE caso = {id}")
+    cur.execute(f"SELECT * FROM public.casos_casospt WHERE caso = '{id}'")
     # Armazena os valores do banco de dados em um dicionario com as keys = as colunas do banco de dados
 
     # Recuperar o resultado da consulta
@@ -54,23 +54,23 @@ def pag_3(cur, id, objetivo, path):
     # Cria um layout onde vai aparecer o novo caso e o antigo caso pysimplegui
 
     col1 = [
-        [sg.Text('Novo Caso', background_color='dark gray')],
+        [sg.Text('Novo Caso', background_color='#B2CBB0')],
         [tabela_novo_caso],
     ]
-    col2 = [[sg.Text('Caso Similar', background_color='dark gray'),
+    col2 = [[sg.Text('Caso Similar:', background_color='#B2CBB0'),
              sg.Text(f'ID: {id} Descricao: {antigo_caso["desc_doenca"]}')],
             [tabela_antigo_caso]]
     next_button = [
-        [sg.Button('Continuar')],
+        [sg.Button('Cadastrar')],
     ]
     back_button = [
         [sg.Button('Voltar')],
     ]
     layout_pag3 = [
-        # Me sugere cores para o background
-        [sg.Column(col1, background_color='light gray'), sg.Column(col2, background_color='light gray')],
+        [sg.Column(col1, background_color='#B2CBB0'), sg.Column(col2, background_color='#B2CBB0')],
         [sg.Column(back_button, element_justification='left', expand_x=True),
          sg.Column(next_button, element_justification='right', expand_x=True),
+         [sg.Text('Selecione o Objetivo:'), sg.Text()],
          [sg.Combo(objetivo, key='objetivo', size=(20, 10), readonly=True)], ]
     ]
 
@@ -85,7 +85,7 @@ def pag_3(cur, id, objetivo, path):
         elif event == 'Voltar':
             window.close()
             return 0
-        elif event == 'Continuar':
+        elif event == 'Cadastrar':
             # Armazena o novo_caso no banco de dados
             cur.execute(
                 f"INSERT INTO public.casos_casospt(desc_doenca, area_damaged, canker_lesion, crop_hist, date, external_decay, fruit_spots, fruiting_bodies, fruit_pods, germination, hail, int_discolor, leaf_malf, leaf_mild, leaf_shread, leafspots_halo, leafspot_size, leafspot_marg, leaves, lodging, mold_growth, mycelium, plant_growth, plant_stand, precip, roots, sclerotia, seed, seed_discolor, seed_size, seed_tmt, severity, shriveling, stem, stem_cankers, temp)VALUES ('{values['objetivo']}', '{novo_caso['area_damaged']}', '{novo_caso['canker_lesion']}', '{novo_caso['crop_hist']}', '{novo_caso['date']}', '{novo_caso['external_decay']}', '{novo_caso['fruit_spots']}', '{novo_caso['fruiting_bodies']}', '{novo_caso['fruit_pods']}', '{novo_caso['germination']}', '{novo_caso['hail']}', '{novo_caso['int_discolor']}', '{novo_caso['leaf_malf']}', '{novo_caso['leaf_mild']}', '{novo_caso['leaf_shread']}', '{novo_caso['leafspots_halo']}', '{novo_caso['leafspot_size']}', '{novo_caso['leafspot_marg']}', '{novo_caso['leaves']}', '{novo_caso['lodging']}', '{novo_caso['mold_growth']}', '{novo_caso['mycelium']}', '{novo_caso['plant_growth']}', '{novo_caso['plant_stand']}', '{novo_caso['precip']}', '{novo_caso['roots']}', '{novo_caso['sclerotia']}', '{novo_caso['seed']}', '{novo_caso['seed_discolor']}', '{novo_caso['seed_size']}', '{novo_caso['seed_tmt']}', '{novo_caso['severity']}', '{novo_caso['shriveling']}', '{novo_caso['stem']}', '{novo_caso['stem_cankers']}', '{novo_caso['temp']}')")
